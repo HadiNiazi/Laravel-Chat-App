@@ -28,45 +28,11 @@
                             </div>
                             <div class="card-body">
 
-                              <div class="d-flex flex-row justify-content-start mb-4">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="avatar 1"
-                                  style="width: 45px; height: 100%;">
-                                <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
-                                  <p class="small mb-0">Hello and thank you for visiting MDBootstrap. Please click the video below.</p>
-                                </div>
+                              <div id="chat-body">
+
                               </div>
 
-                              <div class="d-flex flex-row justify-content-end mb-4">
-                                <div class="p-3 me-3 border" style="border-radius: 15px; background-color: #fbfbfb;">
-                                  <p class="small mb-0">Thank you, I really like your product.</p>
-                                </div>
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp" alt="avatar 1"
-                                  style="width: 45px; height: 100%;">
-                              </div>
-
-                              <div class="d-flex flex-row justify-content-start mb-4">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="avatar 1"
-                                  style="width: 45px; height: 100%;">
-                                <div class="ms-3" style="border-radius: 15px;">
-                                  <div class="bg-image">
-                                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/screenshot1.webp"
-                                      style="border-radius: 15px;" alt="video">
-                                    <a href="#!">
-                                      <div class="mask"></div>
-                                    </a>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="d-flex flex-row justify-content-start mb-4">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="avatar 1"
-                                  style="width: 45px; height: 100%;">
-                                <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
-                                  <p class="small mb-0">...</p>
-                                </div>
-                              </div>
-
-                              <input type="hidden" name="receiver_id" id="receiver_id" value="2">
+                              <input type="hidden" name="receiver_id" id="receiver_id" value="1">
 
                               <div class="form-outline">
                                 <textarea class="form-control" id="message" rows="4" placeholder="Type your message"></textarea>
@@ -99,6 +65,46 @@
 <script type="module">
     Echo.channel('chat-room')
     .listen('MessageSent', (e) => {
+
+        if (e.message != null) {
+
+            let userId = "{{ auth()->id() }}";
+
+            if (e.message.sender_id == userId) {
+
+                $('#chat-body').append(`
+
+                    <div class="d-flex flex-row justify-content-start mb-4">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="avatar 1"
+                            style="width: 45px; height: 100%;">
+                        <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                            <p class="small mb-0">${e.message.message}</p>
+                        </div>
+                    </div>
+
+                `);
+
+            }
+
+            if (e.message.receiver_id == userId) {
+
+                $('#chat-body').append(`
+
+                    <div class="d-flex flex-row justify-content-end mb-4">
+                        <div class="p-3 me-3 border" style="border-radius: 15px; background-color: #fbfbfb;">
+                        <p class="small mb-0">${e.message.message}</p>
+                        </div>
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp" alt="avatar 1"
+                        style="width: 45px; height: 100%;">
+                    </div>
+
+                `);
+
+            }
+
+
+
+        }
         console.log(e.message);
     });
 </script>
@@ -123,7 +129,8 @@
                 data: { message, receiver_id },
                 success: function(response){
 
-                    console.log(response)
+                   $("#message").val('');
+                    // console.log(response)
                     // $("#results").append(html);
                 },
 

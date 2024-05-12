@@ -24,7 +24,7 @@ class ChatController extends Controller
 
             if ($msg) {
 
-                MessageSent::dispatch($msg->message);
+                MessageSent::dispatch($msg);
 
                 return response()->json([
                     'msg' => 'Message Sent Successfully'
